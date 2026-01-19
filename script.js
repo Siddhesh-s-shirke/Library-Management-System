@@ -54,7 +54,7 @@ function ddmmyyyyToISODate(ddmmyyyy) {
   const yyyy = d.getFullYear();
   const mm = String(d.getMonth() + 1).padStart(2, "0");
   const dd = String(d.getDate()).padStart(2, "0");
-  return `${yyyy}-${mm}-${dd}`; // ISO date
+  return `${yyyy}-${mm}-${dd}`;
 }
 
 function formatDDMMYYYY_FromISODateString(isoDateStr) {
@@ -262,7 +262,7 @@ function updateDashboard() {
   setText("mostBorrowedBook", mostBorrowedBook);
   setText("highestFineUser", highestFineUser);
 
-  // Top overdue list (Top 5)
+  // Overdue list
   const overdueList = loans
     .map(l => {
       const user = users.find(u => u.id === l.userId);
@@ -301,7 +301,7 @@ function updateDashboard() {
     }
   }
 
-  // Low stock list (Top 5)
+  // Low stock
   const lowStockBooks = books
     .filter(b => (Number(b.quantity) || 0) <= 2)
     .sort((a, b) => (Number(a.quantity) || 0) - (Number(b.quantity) || 0))
@@ -325,7 +325,7 @@ function updateDashboard() {
     }
   }
 
-  // Recent activity (Top 10)
+  // Recent activity
   const recent = [...history].reverse().slice(0, 10);
   const activityBody = document.querySelector("#recentActivityTable tbody");
   if (activityBody) {
@@ -403,8 +403,6 @@ function addBook() {
   document.getElementById("bookAuthor").value = "";
   document.getElementById("bookISBN").value = "";
   document.getElementById("bookQuantity").value = "";
-
-  animateSuccess();
 }
 
 function editBook(index) {
@@ -507,8 +505,6 @@ function addUser() {
 
   document.getElementById("userName").value = "";
   document.getElementById("userID").value = "";
-
-  animateSuccess();
 }
 
 function deleteUser(index) {
@@ -637,7 +633,6 @@ function allotBook() {
   renderBooks();
   renderHistory();
   updateDashboard();
-  animateSuccess();
 }
 
 function renderLoans() {
@@ -704,7 +699,6 @@ function returnBook(index) {
   renderBooks();
   renderHistory();
   updateDashboard();
-  animateSuccess();
 }
 
 function filterLoans() {
@@ -846,18 +840,6 @@ function toggleDarkMode() {
   document.body.classList.toggle("dark-mode");
 }
 
-function animateSuccess() {
-  const topbar = document.querySelector(".topbar");
-  if (!topbar) return;
-
-  const oldBg = topbar.style.background;
-  topbar.style.background = "linear-gradient(135deg, #28a745 0%, #20c997 100%)";
-
-  setTimeout(() => {
-    topbar.style.background = oldBg || "";
-  }, 450);
-}
-
 function updateDateTime() {
   const now = new Date();
   const el = document.getElementById("currentDateTime");
@@ -871,7 +853,6 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("fineRateUI").textContent = FINE_PER_DAY;
   document.getElementById("graceDaysUI").textContent = GRACE_DAYS;
 
-  // ✅ Restore last opened page
   const savedPage = localStorage.getItem("activePage") || "dashboard";
   document.querySelectorAll(".page").forEach(p => p.classList.remove("active-page"));
   document.getElementById(savedPage)?.classList.add("active-page");
@@ -881,7 +862,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (btn.getAttribute("onclick")?.includes(savedPage)) btn.classList.add("active");
   });
 
-  // ✅ Due Date Input Sync (Auto Slash + Calendar)
+  // ✅ Due Date input sync
   const dueText = document.getElementById("dueDateText");
   const duePicker = document.getElementById("dueDatePicker");
 
@@ -898,7 +879,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // ✅ Init renders
   renderBooks();
   renderUsers();
   renderLoans();
